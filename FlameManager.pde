@@ -1,14 +1,12 @@
 class FlameManager {
 
-  PImage[] flameImgs = new PImage[5];
+   PImage[] flameImgs = new PImage[5];
 
   private int[] flameFrameCount; // 這個火焰經過幾次系統影格了 -> 被 draw 了幾次 -> 便可透過 frameRate 來轉換成畫了幾秒。
   private float[] flameX ; 
   private float[] flameY ;
   private int boomIndex = 0 ; // 現在要用哪一來儲存爆炸狀態 -> 同時也代表，我要去用 array 的第幾格存。
-
   private int periodFrame  ; // 每一張火焰地圖，要播放幾個 frame 
-
 
   FlameManager(int periodFrame ) { 
 
@@ -31,12 +29,23 @@ class FlameManager {
 
 
   void display () {
-    //  https://gist.github.com/RadianSmile/fcdd9bd6462d474a106698319d8d36a2
+    for(int i=0;i<flameFrameCount.length;i++) {
+      flameFrameCount[i]++;
+      int flameFrame = floor( flameFrameCount[i] / (periodFrame/5));
+      if( flameFrame < 5 ) {
+        image(flameImgs[flameFrame],flameX[i], flameY[i]);
+      }
+    }
   }
 
 
   void add (float x, float y) {
-    //  https://gist.github.com/RadianSmile/fcdd9bd6462d474a106698319d8d36a2
+    flameFrameCount[boomIndex] = 0;
 
+    flameX[boomIndex] = x;
+    flameY[boomIndex] = y;
+    
+    boomIndex ++;
+    boomIndex %= flameFrameCount.length;
   }
 }
